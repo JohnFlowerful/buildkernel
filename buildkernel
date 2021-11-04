@@ -104,6 +104,9 @@ VERBOSITY=1
 PREFIXSTRING="* "
 SHOWPREFIX="${GREEN_TEXT}${PREFIXSTRING}${RESET_ATTS}"
 SHOWSUFFIX=""
+QUERYSTRING=">> "
+QUERYPREFIX="${GREEN_TEXT}${QUERYSTRING}${RESET_ATTS}"
+QUERYSUFFIX=""
 declare -i USINGUSBKEYFOREFI=0
 declare -i BACKUPOLDKERNEL=1
 declare -i BUILT_EXTERNAL_MODULES=1
@@ -233,14 +236,14 @@ trap_cleanup() {
 trap trap_cleanup SIGHUP SIGQUIT SIGINT SIGTERM EXIT
 
 test_yn() {
-    echo -n -e "${SHOWPREFIX}${1} (y/n)? ${SHOWSUFFIX}${ALERT_TEXT}"
-    read -r -n 1
-    echo
-    if [[ ${REPLY} =~ ^[Yy]$ ]]; then
-        return 0
-    else
-        return 1
-    fi
+    while true; do
+        read -n1 -p "${QUERYPREFIX}${1} (y/n)? ${QUERYSUFFIX}${ALERT_TEXT}" yn
+        case "$yn" in
+                [Yy]* ) return 0;;
+                [Nn]* ) echo; return 1;;
+                * ) echo -e "\n${YELLOW_TEXT}${PREFIXSTRING}${RESET_ATTS}Please answer yes or no.";;
+        esac
+    done
 }
 
 test_yn_need_enter() {
