@@ -239,7 +239,7 @@ test_yn() {
     while true; do
         read -n1 -p "${QUERYPREFIX}${1} (y/n)? ${QUERYSUFFIX}${ALERT_TEXT}" yn
         case "$yn" in
-                [Yy]* ) return 0;;
+                [Yy]* ) echo; return 0;;
                 [Nn]* ) echo; return 1;;
                 * ) echo -e "\n${YELLOW_TEXT}${PREFIXSTRING}${RESET_ATTS}Please answer yes or no.";;
         esac
@@ -247,14 +247,14 @@ test_yn() {
 }
 
 test_yn_need_enter() {
-    echo -n -e "${SHOWPREFIX}${1} (y/n)? ${SHOWSUFFIX}${ALERT_TEXT}"
-    read -r
-    echo
-    if [[ ${REPLY} =~ ^[Yy]$ ]]; then
-        return 0
-    else
-        return 1
-    fi
+    while true; do
+        read -p "${QUERYPREFIX}${1} (y/n)? ${QUERYSUFFIX}${ALERT_TEXT}" yn
+        case "$yn" in
+                [Yy]* ) echo; return 0;;
+                [Nn]* ) echo; return 1;;
+                * ) echo -e "\n${YELLOW_TEXT}${PREFIXSTRING}${RESET_ATTS}Please answer yes or no.";;
+        esac
+    done
 }
 
 continue_yn() {
@@ -759,7 +759,7 @@ find_all_efi_boot_entries() {
         local NEXTUUID
         NEXTUUID=$(grep -E -o 'HD\([^(]*\)' <<<"${NEXTLINE}" | grep -E -o '[[:xdigit:]]{8}(\-[[:xdigit:]]{4}){3}\-[[:xdigit:]]{12}')
         local NEXTPATH
-        NEXTPATH=$(grep -E -o 'File\([^(]*\)' <<<"${NEXTLINE}" || "";)
+        NEXTPATH=$(grep -E -o 'File\([^(]*\)' <<<"${NEXTLINE}" || :;)
         NEXTPATH="${NEXTPATH:5:-1}"
         local NEXTNAME
         NEXTNAME="$(efibootmgr | grep "^${NEXTSIG}" | cut -c11-)"
