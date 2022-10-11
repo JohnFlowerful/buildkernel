@@ -1642,7 +1642,7 @@ conform_efi_boot_order_if_possible() {
         if [[ "${EBOOTIDTOINDEX[${FIRSTBOOTID}]+_}" ]]; then
             declare -i IX="${EBOOTIDTOINDEX[${FIRSTBOOTID}]}"
             # now check if this boot matches what we want; if so, leave it alone
-            if [[ "${EBOOTNAMES[${IX}]}" == "${BOOTLABEL}" && \
+            if [[ "${EBOOTNAMES[${IX}]}" == "${BOOTLABEL}"* && \
                 "${EBOOTPATHS[${IX}]}" == "${SMBOOTPATH}" && \
                 "${EBOOTUUIDS[${IX}]}" == "${EFIPARTUUID}" && \
                 "${EBOOTISACTIVES[${IX}]}" == "1" ]]; then
@@ -1656,7 +1656,7 @@ conform_efi_boot_order_if_possible() {
         # remove any existing bootnums with the same name first
         declare -i I=0
         for I in "${!EBOOTNAMES[@]}"; do
-            if [[ "${EBOOTNAMES[${I}]}" == "${BOOTLABEL}" ]]; then
+            if [[ "${EBOOTNAMES[${I}]}" == "${BOOTLABEL}"* ]]; then
                 show "Deleting conflicting boot entry ${EBOOTIDS[${I}]} ('${EBOOTNAMES[${I}]}')"
                 efibootmgr --quiet --delete-bootnum --bootnum "${EBOOTIDS[${I}]}"
             fi
