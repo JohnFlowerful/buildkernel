@@ -768,7 +768,7 @@ find_all_efi_boot_entries() {
         NEXTPATH=$(grep -E -o 'File\([^(]*\)' <<<"${NEXTLINE}" || :;)
         NEXTPATH="${NEXTPATH:5:-1}"
         local NEXTNAME
-        NEXTNAME="$(efibootmgr | grep "^${NEXTSIG}" | cut -c11-)"
+        NEXTNAME="$(efibootmgr | grep "^${NEXTSIG}" | cut -c11- | cut -f1)"
         NEXTUUID="${NEXTUUID,,}"
         if [[ -z "${NEXTID}" || -z "${NEXTNAME}" || -z "${NEXTPATH}" || -z "${NEXTUUID}" || -z "${NEXTISACTIVE}" ]]; then
             # one of the required strings is empty, we cannot use this line
@@ -1642,7 +1642,7 @@ conform_efi_boot_order_if_possible() {
         if [[ "${EBOOTIDTOINDEX[${FIRSTBOOTID}]+_}" ]]; then
             declare -i IX="${EBOOTIDTOINDEX[${FIRSTBOOTID}]}"
             # now check if this boot matches what we want; if so, leave it alone
-            if [[ "${EBOOTNAMES[${IX}]}" == "${BOOTLABEL}"* && \
+            if [[ "${EBOOTNAMES[${IX}]}" == "${BOOTLABEL}" && \
                 "${EBOOTPATHS[${IX}]}" == "${SMBOOTPATH}" && \
                 "${EBOOTUUIDS[${IX}]}" == "${EFIPARTUUID}" && \
                 "${EBOOTISACTIVES[${IX}]}" == "1" ]]; then
@@ -1656,7 +1656,7 @@ conform_efi_boot_order_if_possible() {
         # remove any existing bootnums with the same name first
         declare -i I=0
         for I in "${!EBOOTNAMES[@]}"; do
-            if [[ "${EBOOTNAMES[${I}]}" == "${BOOTLABEL}"* ]]; then
+            if [[ "${EBOOTNAMES[${I}]}" == "${BOOTLABEL}" ]]; then
                 show "Deleting conflicting boot entry ${EBOOTIDS[${I}]} ('${EBOOTNAMES[${I}]}')"
                 efibootmgr --quiet --delete-bootnum --bootnum "${EBOOTIDS[${I}]}"
             fi
