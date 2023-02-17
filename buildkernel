@@ -763,7 +763,7 @@ find_all_efi_boot_entries() {
             NEXTISACTIVE="0"
         fi
         local NEXTUUID
-        NEXTUUID=$(grep -E -o 'HD\([^(]*\)' <<<"${NEXTLINE}" | grep -E -o '[[:xdigit:]]{8}(\-[[:xdigit:]]{4}){3}\-[[:xdigit:]]{12}')
+        NEXTUUID=$(grep -E -o 'HD\([^(]*\)' <<<"${NEXTLINE}" | grep -E -o '[[:xdigit:]]{8}(-[[:xdigit:]]{4}){3}-[[:xdigit:]]{12}')
         local NEXTPATH
         NEXTPATH=$(grep -E -o 'File\([^(]*\)' <<<"${NEXTLINE}" || :;)
         NEXTPATH="${NEXTPATH:5:-1}"
