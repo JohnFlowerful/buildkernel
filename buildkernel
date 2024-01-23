@@ -1959,10 +1959,6 @@ kernel_build_pass_1() {
         show "Installing modules..."
         ${MAKE} modules_install
     fi
-
-    show "Installing firmware..."
-    show "(where supported; in-kernel firmware was dropped in 4.14)"
-    ${MAKE} firmware_install || true
 }
 
 rebuild_external_modules_if_necessary() {
