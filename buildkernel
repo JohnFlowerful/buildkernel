@@ -765,8 +765,7 @@ find_all_efi_boot_entries() {
         local NEXTUUID
         NEXTUUID=$(grep -E -o 'HD\([^(]*\)' <<<"${NEXTLINE}" | grep -E -o '[[:xdigit:]]{8}(-[[:xdigit:]]{4}){3}-[[:xdigit:]]{12}')
         local NEXTPATH
-        NEXTPATH=$(grep -E -o 'File\([^(]*\)' <<<"${NEXTLINE}" || :;)
-        NEXTPATH="${NEXTPATH:5:-1}"
+        NEXTPATH=$(grep -P -o '(?!HD\([^(]*\))[^\/]+\.efi' <<<"${NEXTLINE}")
         local NEXTNAME
         NEXTNAME="$(efibootmgr | grep "^${NEXTSIG}" | cut -c11- | cut -f1)"
         NEXTUUID="${NEXTUUID,,}"
